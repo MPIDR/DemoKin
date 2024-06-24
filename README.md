@@ -1,6 +1,4 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # DemoKin
 
 <div class="columns">
@@ -10,14 +8,14 @@
 `DemoKin` uses matrix demographic methods to compute expected (average)
 kin counts from demographic rates under a range of scenarios and
 assumptions. The package is an R-language implementation of Caswell
-(2019), Caswell (2020), and Caswell and Song (2021). It draws on
-previous theoretical development by Goodman, Keyfitz and Pullum (1974).
+(2019, 2020, 2022), and Caswell and Song (2021). It draws on previous
+theoretical development by Goodman, Keyfitz and Pullum (1974).
 
 </div>
 
 <div class="column" width="40%">
 
-<img src="DemoKin-Logo.png" align="right" width="200" />
+<img src="man/figures/DemoKin-Logo.png" align="right" width="200" />
 
 </div>
 
@@ -25,7 +23,14 @@ previous theoretical development by Goodman, Keyfitz and Pullum (1974).
 
 ## Installation
 
-You can install the development version from GitHub with:
+Download the stable version [from
+CRAN](https://cran.r-project.org/web/packages/DemoKin/):
+
+``` r
+install.packages("DemoKin")
+```
+
+Or you can install the development version from GitHub:
 
 ``` r
 # install.packages("devtools")
@@ -34,14 +39,15 @@ devtools::install_github("IvanWilli/DemoKin")
 
 ## Usage
 
-Consider an average Swedish woman called ‘Focal’. For this exercise, we
+Consider an average Swedish woman called ‘Focal.’ For this exercise, we
 assume a female closed population in which everyone experiences the
 Swedish 2015 mortality and fertility rates at each age throughout their
-life (the ‘time-invariant’ assumption in Caswell \[2019\]).
+life; i.e., the ‘time-invariant’ assumption in Caswell (2019).
 
 We then ask:
 
-> How many living relatives does Focal have at each age?
+> What is the expected number of relatives of Focal over her life
+> course?
 
 Let’s explore this using the Swedish data already included with
 `DemoKin`.
@@ -50,11 +56,11 @@ Let’s explore this using the Swedish data already included with
 library(DemoKin)
 swe_surv_2015 <- swe_px[,"2015"]
 swe_asfr_2015 <- swe_asfr[,"2015"]
-swe_2015 <- kin(U = swe_surv_2015, f = swe_asfr_2015, time_invariant = TRUE)
+swe_2015 <- kin(p = swe_surv_2015, f = swe_asfr_2015, time_invariant = TRUE)
 ```
 
-*px* is the survival probability by age from a life table and *f* are
-the age specific fertility raties by age (see `?kin` for details).
+*p* is the survival probability by age from a life table and *f* are the
+age specific fertility ratios by age (see `?kin` for details).
 
 Now, we can visualize the implied kin counts (i.e., the average number
 of living kin) of Focal at age 35 using a network or ‘Keyfitz’ kinship
@@ -69,33 +75,43 @@ names(kin_total) <- c("kin", "count")
 plot_diagram(kin_total, rounding = 2)
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
 Relatives are identified by a unique code:
 
-| DemoKin | Label                      |
-|:--------|:---------------------------|
-| coa     | Cousins from older aunt    |
-| cya     | Cousins from younger aunt  |
-| d       | Daughter                   |
-| gd      | Grand-daughter             |
-| ggd     | Great-grand-daughter       |
-| ggm     | Great-grandmother          |
-| gm      | Grandmother                |
-| m       | Mother                     |
-| nos     | Nieces from older sister   |
-| nys     | Nieces from younger sister |
-| oa      | Aunt older than mother     |
-| ya      | Aunt younger than mother   |
-| os      | Older sister               |
-| ys      | Younger sister             |
+| DemoKin | Labels_female               | Labels_male                   | Labels_2sex                       |
+|:--------|:----------------------------|:------------------------------|:----------------------------------|
+| coa     | Cousins from older aunts    | Cousins from older uncles     | Cousins from older aunts/uncles   |
+| cya     | Cousins from younger aunts  | Cousins from younger uncles   | Cousins from younger aunts/uncles |
+| c       | Cousins                     | Cousins                       | Cousins                           |
+| d       | Daughters                   | Brothers                      | Siblings                          |
+| gd      | Grand-daughters             | Grand-sons                    | Grand-childrens                   |
+| ggd     | Great-grand-daughters       | Great-grand-sons              | Great-grand-childrens             |
+| ggm     | Great-grandmothers          | Great-grandfathers            | Great-grandfparents               |
+| gm      | Grandmothers                | Grandfathers                  | Grandparents                      |
+| m       | Mother                      | Father                        | Parents                           |
+| nos     | Nieces from older sisters   | Nephews from older brothers   | Niblings from older siblings      |
+| nys     | Nieces from younger sisters | Nephews from younger brothers | Niblings from younger siblings    |
+| n       | Nieces                      | Nephews                       | Niblings                          |
+| oa      | Aunts older than mother     | Uncles older than fathers     | Aunts/Uncles older than parents   |
+| ya      | Aunts younger than mother   | Uncles younger than father    | Aunts/Uncles younger than parents |
+| a       | Aunts                       | Uncles                        | Aunts/Uncles                      |
+| os      | Older sisters               | Older brothers                | Older siblings                    |
+| ys      | Younger sisters             | Younger brothers              | Younger siblings                  |
+| s       | Sisters                     | Brothers                      | Siblings                          |
 
 ## Vignette
 
-For more details, including an extension to time varying-populations
-rates, deceased kin, and multi-state models, see
-`vignette("Reference", package = "DemoKin")`. If the vignette does not
-load, you may need to install the package as
+For more details, including an extension to time-variant rates, deceased
+kin, and multi-state models in a one-sex framework, see the
+[Reference_OneSex](https://cran.r-project.org/web/packages/DemoKin/vignettes/Reference_OneSex.html)
+vignette; also accessible from DemoKin:
+`vignette("Reference_OneSex", package = "DemoKin")`. For two-sex models,
+see the
+[Reference_TwoSex](https://cran.r-project.org/web/packages/DemoKin/vignettes/Reference_TwoSex.html)
+vignette; also accessible from DemoKin:
+`vignette("Reference_TwoSex", package = "DemoKin")`. If the vignette
+does not load, you may need to install the package as
 `devtools::install_github("IvanWilli/DemoKin", build_vignettes = T)`.
 
 ## Citation
@@ -122,22 +138,48 @@ request. We look forward to hearing from you!
 
 ## References
 
-Caswell, H. 2019. The formal demography of kinship: A matrix
-formulation. Demographic Research 41:679–712.
-<doi:10.4054/DemRes.2019.41.24>.
+<div id="refs" class="references csl-bib-body hanging-indent">
 
-Caswell, H. 2020. The formal demography of kinship II: Multistate
-models, parity, and sibship. Demographic Research 42: 1097-1144.
-<doi:10.4054/DemRes.2020.42.38>.
+<div id="ref-caswell_formal_2019" class="csl-entry">
 
-Caswell, Hal and Xi Song. 2021. “The Formal Demography of Kinship. III.
-Kinship Dynamics with Time-Varying Demographic Rates.” Demographic
-Research 45: 517–46. <doi:10.4054/DemRes.2021.45.16>.
+Caswell, Hal. 2019. “The Formal Demography of Kinship: A Matrix
+Formulation.” *Demographic Research* 41 (September): 679–712.
+<https://doi.org/10.4054/DemRes.2019.41.24>.
 
-Goodman, L.A., Keyfitz, N., and Pullum, T.W. (1974). Family formation
-and the frequency of various kinship relationships. Theoretical
-Population Biology 5(1):1–27. <doi:10.1016/0040-5809(74)90049-5>.
+</div>
 
-<!-- ## Next steps: -->
-<!-- 1. Implement two-sex matrix kinship models -->
-<!-- 1. Improve documentation and vignette of package  -->
+<div id="ref-caswell_formal_2020" class="csl-entry">
+
+———. 2020. “The Formal Demography of Kinship II: Multistate Models,
+Parity, and Sibship.” *Demographic Research* 42 (June): 1097–1146.
+<https://doi.org/10.4054/DemRes.2020.42.38>.
+
+</div>
+
+<div id="ref-caswell_formal_2022" class="csl-entry">
+
+———. 2022. “The Formal Demography of Kinship IV: Two-Sex Models and
+Their Approximations.” *Demographic Research* 47 (September): 359–96.
+<https://doi.org/10.4054/DemRes.2022.47.13>.
+
+</div>
+
+<div id="ref-caswell_formal_2021" class="csl-entry">
+
+Caswell, Hal, and Xi Song. 2021. “The Formal Demography of Kinship III:
+Kinship Dynamics with Time-Varying Demographic Rates.” *Demographic
+Research* 45 (August): 517–46.
+<https://doi.org/10.4054/DemRes.2021.45.16>.
+
+</div>
+
+<div id="ref-goodman_family_1974" class="csl-entry">
+
+Goodman, Leo A, Nathan Keyfitz, and Thomas W. Pullum. 1974. “Family
+Formation and the Frequency of Various Kinship Relationships.”
+*Theoretical Population Biology*, 27.
+<https://doi.org/10.1016/0040-5809(74)90049-5>.
+
+</div>
+
+</div>
